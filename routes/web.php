@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\blogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,16 +14,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth'])->name('dashboard');
 
-Route::get('/', function () {
-    return view('users.index');
-});
+// Route::get('/users/index', function () {
+//     return view('users.index');
+// })->middleware(['auth'])->name('index');
+
+Route::get('/users/index', [blogController::class, 'index'])->middleware(['auth'])->name('users.index');
 
 require __DIR__.'/auth.php';
