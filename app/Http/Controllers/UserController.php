@@ -9,13 +9,17 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class blogController extends Controller
+class UserController extends Controller
 {
     use SoftDeletes;
-
+    public $user_service;
+    public function __construct(UserService $user_service)
+    {
+        $this->user_service = $user_service;
+    }
     public function index()
     {
-        $user_id    = Auth::id(); 
+        $user_id = Auth::id(); 
         // 今のユーザのメアドを取得
         $user_email = DB::table('users')
             ->select('email')
@@ -27,10 +31,11 @@ class blogController extends Controller
             ->where('users.email', '=', $user_email)
             ->where('blogs.user_email', '=',  $user_email)
             ->crossJoin('users') 
-            ->whereNull('blogs.deleted_at')
-            ->paginate(10); 
+            ->whereNull('blogs.deleted_at')->get();
 
-        return view('users.index', compact('blogs'));
+        $datalist = UserController::archive();
+
+        return view('users.index', compact('blogs', 'datalist'));
     }
 
     public function edit(int $id, string $blog, string $body)
@@ -114,9 +119,8 @@ class blogController extends Controller
             ->where('users.email', '=', $user_email)
             ->where('blogs.user_email', '=', $user_email)
             ->crossJoin('users') 
-            ->whereNotNull('blogs.deleted_at')
-            ->paginate(10); 
-
+            ->whereNotNull('blogs.deleted_at')->get();
+        return $datalist;
         return view('users.blogs.archive', compact('datalist'));
     }
 
@@ -159,8 +163,7 @@ class blogController extends Controller
             ->where('users.email', '=', $user_email)
             ->where('blogs.user_email', '=', $user_email)
             ->crossJoin('users') 
-            ->whereNull('blogs.deleted_at')
-            ->paginate(10); 
+            ->whereNull('blogs.deleted_at')->get();
 
         return view('users.blogs.open', compact('blogs'));
     }
@@ -187,8 +190,8 @@ class blogController extends Controller
             ->where('users.email', '=', $user_email)
             ->where('blogs.user_email', '=', $user_email)
             ->crossJoin('users') 
-            ->whereNull('blogs.deleted_at')
-            ->paginate(10); 
+            ->whereNull('blogs.deleted_at')->get();
+            // ->paginate(10); 
 
         return view('users.blogs.open', compact('blogs'));
     }
@@ -208,8 +211,8 @@ class blogController extends Controller
             ->where('blogs.open', '=', true)
             ->distinct()
             ->whereNull('blogs.deleted_at')
-            ->crossJoin('users') 
-            ->paginate(10); 
+            ->crossJoin('users')->get();
+            // ->paginate(10); 
 
     return view('users.blogs.others', compact('blogs'));
     }

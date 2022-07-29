@@ -1,6 +1,3 @@
-<x-app-layout>
-    <x-slot name="header">
-</x-slot> 
 <div class="wrapper">
     <table class="table table-striped table-hover table-bordered text-center">
         <thead>
@@ -23,4 +20,3 @@
         </tbody>
     </table>
 </div>
-</x-app-layout>
