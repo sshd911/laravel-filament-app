@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\UserService;
 use App\Models\Blog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-
 class UserController extends Controller
 {
-    use SoftDeletes;
     public $user_service;
+
     public function __construct(UserService $user_service)
     {
         $this->user_service = $user_service;
     }
+
     public function index()
     {
-        $user_id = Auth::id(); 
+        $user_id = Auth::id();
         // 今のユーザのメアドを取得
         $user_email = DB::table('users')
             ->select('email')
@@ -56,7 +56,7 @@ class UserController extends Controller
             'body' => $body,
             ]);
 
-        return redirect('users/index');
+        return view('users.blogs.index');
     }
 
     public function delete(Request $request)
@@ -80,7 +80,7 @@ class UserController extends Controller
         $body = (string)    $request->body ? $request->body : '未定';
         $open = (bool) true;
 
-        $user_id    = Auth::id(); 
+        $user_id = Auth::id();
         // ユーザのテーブル情報取得
         $user_info = DB::table('users')
             ->select('*')
@@ -107,7 +107,7 @@ class UserController extends Controller
 
     public function archive()
     {
-        $user_id    = Auth::id(); 
+        $user_id = Auth::id();
         // 今のユーザのメアドを取得
         $user_email = DB::table('users')
             ->select('email')
@@ -151,7 +151,7 @@ class UserController extends Controller
 
     public function open()
     {
-        $user_id    = Auth::id(); 
+        $user_id = Auth::id();
         // 今のユーザのメアドを取得
         $user_email = DB::table('users')
             ->select('email')
@@ -178,7 +178,7 @@ class UserController extends Controller
                 'open' => $open,
             ]);
 
-        $user_id    = Auth::id(); 
+        $user_id = Auth::id();
         // 今のユーザのメアドを取得
         $user_email = DB::table('users')
             ->select('email')
@@ -197,7 +197,7 @@ class UserController extends Controller
     }
     public function others()
     {
-        $user_id    = Auth::id(); 
+        $user_id = Auth::id();
         // 今のユーザのメアドを取得
         $user_email = DB::table('users')
             ->select('email')
@@ -234,7 +234,7 @@ class UserController extends Controller
 
     public function post(Request $request)
     {
-        $user_id    = Auth::id(); 
+        $user_id = Auth::id();
         // 今のユーザのメアドを取得
         $user_info = DB::table('users')
             ->select('*')
