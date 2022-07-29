@@ -30,7 +30,7 @@ class blogController extends Controller
             ->whereNull('blogs.deleted_at')
             ->paginate(10); 
 
-        return view('dashboard', compact('blogs'));
+        return view('users.index', compact('blogs'));
     }
 
     public function edit(int $id, string $blog, string $body)
@@ -51,7 +51,7 @@ class blogController extends Controller
             'body' => $body,
             ]);
 
-        return redirect('dashboard');
+        return redirect('users/index');
     }
 
     public function delete(Request $request)
@@ -61,7 +61,7 @@ class blogController extends Controller
         $data = Blog::find($id);
         $data->delete();
         
-        return redirect('dashboard');
+        return redirect('users/index');
     }
 
     public function create()
@@ -97,7 +97,7 @@ class blogController extends Controller
             'open' => $open,
         ]);
 
-        return redirect('dashboard');
+        return redirect('users/index');
     }
 
     public function archive()
