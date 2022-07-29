@@ -1,8 +1,8 @@
-# if you setup when first time
+### if you setup when first time
 ```
 $ sail build && sail up -d
 ```
-# else
+### else
 ``` 
 # docker-compose up -d
 $ sail up -d
@@ -17,4 +17,9 @@ pw: password
 
 # mailhog
 http://localhost:8025/
+```
+```
+# filament 
+$ sail composer require filament/filament:"^2.0"
+$ sail php artisan make:filament-user
 ```
