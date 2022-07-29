@@ -1,4 +1,3 @@
-<x-head-start/>
 <x-app-layout>
     <x-slot name="header">
 </x-slot> 
@@ -29,4 +28,3 @@
 {{ $blogs->links('vendor/pagination/bootstrap-4') }}
 </div>
 </x-app-layout>
-<x-head-end/>
