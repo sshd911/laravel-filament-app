@@ -1,4 +1,3 @@
-<x-head-start/>
 <x-app-layout>
     <x-slot name="header">
 </x-slot> 
@@ -61,4 +60,3 @@
     </tbody>
   </table>
 </x-app-layout>
-<x-head-end/>

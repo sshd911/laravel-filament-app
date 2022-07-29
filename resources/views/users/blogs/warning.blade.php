@@ -1,4 +1,3 @@
-<x-head-start/>
 <x-app-layout>
     <x-slot name="header">
 </x-slot> 
@@ -15,4 +14,3 @@
     </div>
   </section>
 </x-app-layout>
-<x-head-end/>
