@@ -14,27 +14,26 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::group(['middleware' => 'web'], function () {
-    Route::get('/users/index', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/blogs/edit/{blog_id}', [UserController::class, 'edit'])->name('users.blogs.edit');
-    Route::get('/users/blogs/delete/{blog_id}', [UserController::class, 'delete'])->name('users.blogs.delete');
-    Route::get('/users/blogs/others', [UserController::class, 'others'])->name('users.blogs.others');
-    Route::post('/users/blogs/create', [UserController::class, 'create'])->name('users.blogs.create');
-    Route::get('/users/blogs/open', [UserController::class, 'open'])->name('users.blogs.open');
-    Route::get('/users/blogs/archive', [UserController::class, 'archive'])->name('users.blogs.archive');
-    Route::get('/users/blogs/warning', [UserController::class, 'warning'])->name('users.blogs.warning');
-    Route::get('/users/blogs/destory', [UserController::class, 'destory'])->name('users.blogs.destory');
-    Route::get('/users/blogs/restore/{blog_id}', [UserController::class, 'restore'])->name('users.blogs.restore');
-    Route::get('/users/blogs/comment', [UserController::class, 'comment'])->name('users.blogs.comment');
-    Route::get('/users/blogs/change/{id}/{open}', [UserController::class, 'change'])->name('users.blogs.change');
-    Route::post('/users/blogs/update', [UserController::class, 'update'])->name('users.blogs.update');
-    Route::get('/users/blogs/unsubscribe', [UserController::class, 'unsubscribe'])->name('users.blogs.unsubscribe');
-    Route::get('/users/blogs/post', [UserController::class, 'post'])->name('users.blogs.post');
-});
-
-
 require __DIR__.'/auth.php';
+
+Route::group(['middleware' => 'web'], function() {
+    Route::get('/', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/index', [UserController::class, 'index'])->name('users.index');
+});
+
+Route::group(['prefix' => 'users/blogs', 'middleware' => 'web'], function () {
+    Route::get('edit/{blog_id}', [UserController::class, 'edit'])->name('users.blogs.edit');
+    Route::get('delete/{blog_id}', [UserController::class, 'delete'])->name('users.blogs.delete');
+    Route::get('others', [UserController::class, 'others'])->name('users.blogs.others');
+    Route::post('create', [UserController::class, 'create'])->name('users.blogs.create');
+    Route::get('open', [UserController::class, 'open'])->name('users.blogs.open');
+    Route::get('archive', [UserController::class, 'archive'])->name('users.blogs.archive');
+    Route::get('warning', [UserController::class, 'warning'])->name('users.blogs.warning');
+    Route::get('destory', [UserController::class, 'destory'])->name('users.blogs.destory');
+    Route::get('restore/{blog_id}', [UserController::class, 'restore'])->name('users.blogs.restore');
+    Route::get('comment', [UserController::class, 'comment'])->name('users.blogs.comment');
+    Route::get('change/{id}/{open}', [UserController::class, 'change'])->name('users.blogs.change');
+    Route::post('update', [UserController::class, 'update'])->name('users.blogs.update');
+    Route::get('unsubscribe', [UserController::class, 'unsubscribe'])->name('users.blogs.unsubscribe');
+    Route::get('post', [UserController::class, 'post'])->name('users.blogs.post');
+});
