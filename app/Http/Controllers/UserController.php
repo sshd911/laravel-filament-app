@@ -103,7 +103,7 @@ class UserController extends Controller
     {
         $user_email = $this->user_service->getUserEmail();
         $user_name = $this->user_service->getUserName();
-        $this->user_service->postComment($request->id, $request->comment, $user_email, $user_name);
+        $this->user_service->postComment(Auth::id(), $request->id, $request->comment, $user_email, $user_name);
         $blogs = $this->user_service->getThisBlog($request->id);
         $comments = $this->user_service->getComments($request->id);
         return view('users.blogs.comment', compact('blogs', 'comments'));
