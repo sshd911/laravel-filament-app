@@ -21,6 +21,7 @@ class UserController extends Controller
         $blogs = $this->user_service->getBlogs();
         $others = $this->others();
         $archives = $this->archive();
+
         return view('users.index', compact('blogs', 'others', 'archives'));
     }
 
@@ -75,14 +76,12 @@ class UserController extends Controller
 
     public function open()
     {
-        $user_id = Auth::id();
-        $blogs = $this->user_service->getBlogs($user_id);
+        $blogs = $this->user_service->getBlogs(Auth::id());
         return view('users.blogs.open', compact('blogs'));
     }
 
     public function change($id, $open)
     {
-        $user_id = Auth::id();
         $open = $open === '非公開' ? true : false;
         $this->user_service->changeOpen($id, $open);
         $blogs = $this->user_service->getBlogs();
@@ -91,8 +90,7 @@ class UserController extends Controller
 
     public function others()
     {
-        $others = $this->user_service->getOthers(Auth::id());
-        return $others;
+        return $this->user_service->getOthers(Auth::id());
     }
 
     public function comment(Request $request)
@@ -104,10 +102,8 @@ class UserController extends Controller
 
     public function post(Request $request)
     {
-        $user_id = Auth::id();
-        $user = $this->user_service->postuser($user_id);
-        $user_email = $user->pluck('email')[0] ;
-        $user_name  = $user->pluck('name')[0];
+        $user_email = $this->user_service->getUserEmail();
+        $user_name = $this->user_service->getUserName();
         $this->user_service->postComment($request->id, $request->comment, $user_email, $user_name);
         $blogs = $this->user_service->getThisBlog($request->id);
         $comments = $this->user_service->getComments($request->id);
@@ -116,8 +112,7 @@ class UserController extends Controller
 
     public function unsubscribe()
     {
-        $user_id = Auth::id();
-        $this->user_service->unsubscribe($user_id);
+        $this->user_service->unsubscribe(Auth::id());
         return view('welcome');
     }
 }

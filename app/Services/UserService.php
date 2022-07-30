@@ -51,7 +51,7 @@ class UserService {
   }
 
   public function getOthers($user_id) {
-    $this->user_repository->getOthers($user_id);
+    return $this->user_repository->getOthers($user_id);
   }
   public function getThisBlog($blog_id) {
     return $this->user_repository->getThisBlog($blog_id);
@@ -62,7 +62,7 @@ class UserService {
   }
 
   public function getComments($user_id) {
-    $this->user_repository->getComments($user_id);
+    return $this->user_repository->getComments($user_id);
   }
 
   public function postUser($user_id) {

@@ -71,7 +71,7 @@ class UserRepository {
   }
 
   public function getOthers($user_id) {
-    return Blog::where('user_email', '<>', $user_id)
+    return Blog::where('user_id', '<>', $user_id)
     ->where('open', '=', true)
     ->whereNull('deleted_at')->get();
   }
@@ -85,7 +85,7 @@ class UserRepository {
   }
 
   public function getComments($blog_id) {
-    Comment::where('blog_id', '=', $blog_id)->get();
+    return Comment::where('blog_id', '=', $blog_id)->get();
   }
 
   public function postUser($user_id) {
@@ -94,6 +94,7 @@ class UserRepository {
 
   public function postComment($blog_id, $comment, $email, $name) {
     Comment::insert([
+      'user_id' => Auth::id(),
       'blog_id'    => $blog_id,
       'comment'    => $comment,
       'user_email' => $email,
