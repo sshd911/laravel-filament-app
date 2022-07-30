@@ -8,8 +8,8 @@
             </tr>
         </thead>
         <tbody>
-            <form method="GET" action="{{ route('users.blogs.update') }}">
-                @method('GET')
+            <form method="POST" action="{{ route('users.blogs.update') }}">
+                @method('POST') {{ csrf_field() }}
                 <tr>
                     <input type="hidden" name='id' value="{{ $id }}" required>
                     <td><input type="text" name='blog' value="{{ $blog }}" required class="px-4 py-2"></td>

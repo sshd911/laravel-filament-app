@@ -14,15 +14,16 @@ class UserService {
     $this->user_repository = $user_repository;
   }
 
-  public function getUserAttributes() {
-    $user_id = Auth::id();
-    $email = $this->user_repository->getUserEmail($user_id);
-    return $email;
+  public function getUserEmail() {
+    return $this->user_repository->getUserEmail(Auth::id());
   }
 
-  public function getBlogs($email) {
-    $blogs = $this->user_repository->getBlogs($email);
-    return $blogs;
+  public function getUserName() {
+    return $this->user_repository->getUserName(Auth::id());
+  }
+
+  public function getBlogs() {
+    return $this->user_repository->getBlogs(Auth::id());
   }
 
   public function updateBlog($id, $blog, $body) {
@@ -33,8 +34,8 @@ class UserService {
     $this->user_repository->deleteBlog($blog_id);
   }
 
-  public function createBlog($count, $email, $name, $blog, $body, $open) {
-    $this->user_repository->createBlog($count, $email, $name, $blog, $body, $open);
+  public function createBlog($count, $email, $name, $blog, $body) {
+    $this->user_repository->createBlog($count, $email, $name, $blog, $body);
   }
 
   public function restoreBlog($blog_id) {
@@ -49,15 +50,15 @@ class UserService {
     $this->user_repository->changeOpen($id, $open);
   }
 
-  public function getOthers($email) {
-    $this->user_repository->getOthers($email);
+  public function getOthers($user_id) {
+    $this->user_repository->getOthers($user_id);
   }
   public function getThisBlog($blog_id) {
     return $this->user_repository->getThisBlog($blog_id);
   }
 
-  public function getArchives($email) {
-    return $this->user_repository->getArchives($email);
+  public function getArchives($user_id) {
+    return $this->user_repository->getArchives($user_id);
   }
 
   public function getComments($user_id) {
