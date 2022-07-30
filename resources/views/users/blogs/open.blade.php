@@ -11,16 +11,16 @@
             </thead>
             <tbody>
             @foreach ($blogs as $blog)
-                <tr>
-                    <td>{{ $blog['blog'] }}</td>
-                    <td>{{ $blog['body'] }}</td>
-                    <td>@php $blog['open'] ? '公開' : '非公開' @endphp</td> 
-                    @php $blog['open'] = $blog['open'] ? true : '非公開' @endphp
-                    <td><button onclick="location.href='{{ route('users.blogs.change',  [ 'id' => $blog['id'], 'open' => $blog['open'] ]) }}'" class="text-white bg-blue-400 border-0 py-2 px-4 focus:outline-none hover:bg-blue-500 rounded">変更</button></td>
-                </tr>
+            <tr>
+                <td>{{ $blog['blog'] }}</td>
+                <td>{{ $blog['body'] }}</td>
+                <td>@php echo $blog['open'] ? '公開' : '非公開' @endphp</td> 
+                @php $blog['open'] = $blog['open'] ? true : '非公開' @endphp
+                <td><button onclick="location.href='{{ route('users.blogs.change',  [ 'id' => $blog['id'], 'open' => $blog['open'] ]) }}'" class="text-white bg-blue-400 border-0 py-2 px-4 focus:outline-none hover:bg-blue-500 rounded">変更</button></td>
+            </tr>
             @endforeach
-        </tbody>
-    </table>
+            </tbody>
+        </table>
     </div>
 @else
     <div class="text-gray-600 body-font pt-20">

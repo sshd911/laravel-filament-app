@@ -24,9 +24,10 @@ class UserController extends Controller
         return view('users.index', compact('blogs', 'others', 'archives'));
     }
 
-    public function edit(Request $request)
+    public function edit($blog_id)
     {
-        return view('users.blogs.edit', ['id' => $id, 'blog' => $blog, 'body' => $body]);
+        $blog = $this->user_service->getThisBlog($blog_id)->toArray()[0];
+        return view('users.blogs.edit', compact('blog'));
     }
 
     public function update(Request $request)

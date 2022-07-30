@@ -20,7 +20,7 @@ Route::get('/', function () {
 
 Route::group(['middleware' => 'web'], function () {
     Route::get('/users/index', [UserController::class, 'index'])->name('users.index');
-    Route::post('/users/blogs/edit', [UserController::class, 'edit'])->name('users.blogs.edit');
+    Route::get('/users/blogs/edit/{blog_id}', [UserController::class, 'edit'])->name('users.blogs.edit');
     Route::get('/users/blogs/delete/{blog_id}', [UserController::class, 'delete'])->name('users.blogs.delete');
     Route::get('/users/blogs/others', [UserController::class, 'others'])->name('users.blogs.others');
     Route::post('/users/blogs/create', [UserController::class, 'create'])->name('users.blogs.create');
@@ -31,7 +31,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/users/blogs/restore/{blog_id}', [UserController::class, 'restore'])->name('users.blogs.restore');
     Route::get('/users/blogs/comment', [UserController::class, 'comment'])->name('users.blogs.comment');
     Route::get('/users/blogs/change/{id}/{open}', [UserController::class, 'change'])->name('users.blogs.change');
-    Route::get('/users/blogs/update', [UserController::class, 'update'])->name('users.blogs.update');
+    Route::post('/users/blogs/update', [UserController::class, 'update'])->name('users.blogs.update');
     Route::get('/users/blogs/unsubscribe', [UserController::class, 'unsubscribe'])->name('users.blogs.unsubscribe');
     Route::get('/users/blogs/post', [UserController::class, 'post'])->name('users.blogs.post');
 });
