@@ -10,16 +10,16 @@
             </tr>
         </thead>
         <tbody>
-        @foreach ($datalist as $data)
+        @foreach ($archives as $archive)
         <tr>
-            <td>{{ $data->blog }}</td>
-            <td>{{ $data->body }}</td>
-            <td>{{ $data->deleted_at}}</td>
+            <td>{{ $archive->blog }}</td>
+            <td>{{ $archive->body }}</td>
+            <td>{{ $archive->deleted_at}}</td>
             <form method="GET" action="{{ route('users.blogs.destory') }}">
             @method('GET')
-                <td><button name="id" type="submit" value="{{ $data->id }}" class="text-white bg-red-400 border-0 py-2 px-4 focus:outline-none hover:bg-red-500 rounded">物理削除</button></td>
+                <td><button name="id" type="submit" value="{{ $archive->id }}" class="text-white bg-red-400 border-0 py-2 px-4 focus:outline-none hover:bg-red-500 rounded">物理削除</button></td>
             </form>
-            <td><button onclick="location.href='{{ route('users.blogs.restore', ['id' => $data->id]) }}'" class="text-white bg-blue-400 border-0 py-2 px-4 focus:outline-none hover:bg-blue-500 rounded">復元</button></td>
+            <td><button onclick="location.href='{{ route('users.blogs.restore', ['id' => $archive->id]) }}'" class="text-white bg-blue-400 border-0 py-2 px-4 focus:outline-none hover:bg-blue-500 rounded">復元</button></td>
         </tr>
         @endforeach
         </tbody>

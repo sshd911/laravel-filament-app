@@ -31,14 +31,13 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/users/blogs/open', [UserController::class, 'open'])->name('users.blogs.open');
     Route::get('/users/blogs/archive', [UserController::class, 'archive'])->name('users.blogs.archive');
     Route::get('/users/blogs/warning', [UserController::class, 'warning'])->name('users.blogs.warning');
-    Route::get('/users/blogs/upgrade', [UserController::class, 'upgrade'])->name('users.blogs.upgrade');
     Route::get('/users/blogs/destory', [UserController::class, 'destory'])->name('users.blogs.destory');
     Route::get('/users/blogs/restore', [UserController::class, 'restore'])->name('users.blogs.restore');
     Route::get('/users/blogs/comment', [UserController::class, 'comment'])->name('users.blogs.comment');
     Route::get('/users/blogs/change', [UserController::class, 'change'])->name('users.blogs.change');
     Route::get('/users/blogs/update', [UserController::class, 'update'])->name('users.blogs.update');
     Route::get('/users/blogs/unsubscribe', [UserController::class, 'unsubscribe'])->name('users.blogs.unsubscribe');
-
+    Route::get('/users/blogs/post', [UserController::class, 'post'])->name('users.blogs.post');
 });
 
 require __DIR__.'/auth.php';

@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\UserService;
-use App\Models\Blog;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -19,23 +17,12 @@ class UserController extends Controller
 
     public function index()
     {
-        $user_id = Auth::id();
-        // 今のユーザのメアドを取得
-        $user_email = DB::table('users')
-            ->select('email')
-            ->where('id', '=', $user_id)
-            ->get()->pluck('email')[0];
-
-        $blogs = DB::table('blogs') 
-            ->select('blogs.*')
-            ->where('users.email', '=', $user_email)
-            ->where('blogs.user_email', '=',  $user_email)
-            ->crossJoin('users') 
-            ->whereNull('blogs.deleted_at')->get();
-
-        $datalist = UserController::archive();
-
-        return view('users.index', compact('blogs', 'datalist'));
+        $email = $this->user_service->getUserAttributes();
+        $blogs = $this->user_service->getBlogs($email);
+        $others = $this->others();
+        $archives = $this->archive();
+        // dd($archives);
+        return view('users.index', compact('blogs', 'others', 'archives'));
     }
 
     public function edit(int $id, string $blog, string $body)
@@ -45,221 +32,106 @@ class UserController extends Controller
 
     public function update(Request $request)
     {
-        $id   = (int)    $request->id;
-        $blog = (string) $request->blog ? $request->blog : '未定';
-        $body = (string) $request->body ? $request->body : '未定';
-        
-        DB::table('blogs')
-            ->where('id', '=', $id)
-            ->update([
-            'blog' => $blog,
-            'body' => $body,
-            ]);
+        $blog = $request->blog ? $request->blog : '未定';
+        $body = $request->body ? $request->body : '未定';
+        $this->user_service->updateBlog($request->id, $blog, $body);
 
-        return view('users.blogs.index');
+        return view('users.index');
     }
 
-    public function delete(Request $request)
+    public function delete(Request $request) // 論理削除
     {
-        // 論理削除
-        $id = (int) $request->id;
-        $data = Blog::find($id);
-        $data->delete();
-        
-        return redirect('users/index');
+        $this->user_service->deleteBlog($request->id);
+        return view('users.index');
     }
 
-    public function create()
+    public function create(Request $request) // 新規作成
     {
-        return view('users.blogs.create');
-    }
+        $blog = $request->blog ? $request->blog : '未定';
+        $body = $request->body ? $request->body : '未定';
+        $open = true;
 
-    public function upgrade(Request $request) // 新規作成
-    {
-        $blog = (string)    $request->blog  ? $request->blog     : '未定';
-        $body = (string)    $request->body ? $request->body : '未定';
-        $open = (bool) true;
+        $email = $this->user_service->getUserAttributes();
+        $blogs = $this->user_service->getBlogs($email);
 
-        $user_id = Auth::id();
-        // ユーザのテーブル情報取得
-        $user_info = DB::table('users')
-            ->select('*')
-            ->where('id', '=', $user_id)
-            ->get();
+        $email = $blogs->pluck('email')[0];
+        $name  = $blogs->pluck('name')[0];
+        // $count = $blogs->max('id')+1;
+        $count = DB::table('blogs')->max('id')+1;
 
-        $user_email = $user_info->pluck('email')[0];
-        $user_name  = $user_info->pluck('name')[0];
-        $count = DB::table('blogs')->max('id');
-        $count++;
+        $this->user_service->createBlog($count, $email, $name, $blog, $body, $open);
 
-        DB::table('blogs')
-            ->insert([
-            'id'         => $count,
-            'user_email' => $user_email,
-            'user_name'  => $user_name, 
-            'blog' => $blog,
-            'body' => $body,
-            'open' => $open,
-        ]);
+        $blogs = $this->user_service->getBlogs($email);
+        $datalist = UserController::archive();
 
-        return redirect('users/index');
+        return view('users.index', compact('blogs', 'datalist'));
     }
 
     public function archive()
     {
-        $user_id = Auth::id();
-        // 今のユーザのメアドを取得
-        $user_email = DB::table('users')
-            ->select('email')
-            ->where('id', '=', $user_id)
-            ->get()->pluck('email')[0];
-
-        $datalist = DB::table('blogs') 
-            ->select('blogs.*')
-            ->where('users.email', '=', $user_email)
-            ->where('blogs.user_email', '=', $user_email)
-            ->crossJoin('users') 
-            ->whereNotNull('blogs.deleted_at')->get();
-        return $datalist;
-        return view('users.blogs.archive', compact('datalist'));
+        $email = $this->user_service->getUserAttributes();
+        $archives = $this->user_service->getArchives($email);
+        return $archives;
+        // return view('users.blogs.index', compact('datalist'));
     }
 
     public function restore(Request $request)
     { 
-        // リストア処理
-        $id = $request->id;
-
-        DB::table('blogs')
-            ->where('id', '=', $id)
-            ->update([
-                'deleted_at' => null,
-            ]);
-
-        return redirect('/archive');
+        $this->user_service->restoreBlog($request->id);
+        return view('users.index');
     }
-    public function destory(Request $request)
+
+    public function destory(Request $request) // 物理削除
     {
-        // 物理削除
-        $id =  $request->id;
-
-        Blog::select('*')
-        ->where('id', '=', $id)
-        ->forceDelete();
-
-        return redirect('/archive');
+        $this->user_service->destoryBlog($request->id);
+        return view('users.index');
     }
 
     public function open()
     {
         $user_id = Auth::id();
-        // 今のユーザのメアドを取得
-        $user_email = DB::table('users')
-            ->select('email')
-            ->where('id', '=', $user_id)
-            ->get()->pluck('email')[0];
-
-        $blogs = DB::table('blogs') 
-            ->select('blogs.*')
-            ->where('users.email', '=', $user_email)
-            ->where('blogs.user_email', '=', $user_email)
-            ->crossJoin('users') 
-            ->whereNull('blogs.deleted_at')->get();
+        $email = $this->user_service->getUserAttributes();
+        $blogs = $this->user_service->getBlogs($email);
 
         return view('users.blogs.open', compact('blogs'));
     }
-    
-    public function change(int $id, string $open)
+
+    public function change($id, $open)
     {
+        $user_id = Auth::id();
         $open = $open === '非公開' ? true : false;
 
-        DB::table('blogs')
-            ->where('id', '=', $id)
-            ->update([
-                'open' => $open,
-            ]);
-
-        $user_id = Auth::id();
-        // 今のユーザのメアドを取得
-        $user_email = DB::table('users')
-            ->select('email')
-            ->where('id', '=', $user_id)
-            ->get()->pluck('email')[0];
-
-        $blogs = DB::table('blogs') 
-            ->select('blogs.*')
-            ->where('users.email', '=', $user_email)
-            ->where('blogs.user_email', '=', $user_email)
-            ->crossJoin('users') 
-            ->whereNull('blogs.deleted_at')->get();
-            // ->paginate(10); 
+        $this->user_service->changeOpen($id, $open);
+        $email = $this->user_service->getUserAttributes();
+        $blogs = $this->user_service->getBlogs($email);
 
         return view('users.blogs.open', compact('blogs'));
     }
+
     public function others()
     {
-        $user_id = Auth::id();
-        // 今のユーザのメアドを取得
-        $user_email = DB::table('users')
-            ->select('email')
-            ->where('id', '=', $user_id)
-            ->get()->pluck('email')[0];
-
-        $blogs = DB::table('blogs') 
-            ->select('blogs.*')
-            ->where('users.email', '<>', $user_email)
-            ->where('blogs.user_email', '<>', $user_email)
-            ->where('blogs.open', '=', true)
-            ->distinct()
-            ->whereNull('blogs.deleted_at')
-            ->crossJoin('users')->get();
-            // ->paginate(10); 
-
-    return view('users.blogs.others', compact('blogs'));
+        $email = $this->user_service->getUserAttributes();
+        $others = $this->user_service->getOthers($email);
+        return $others;
+    // return view('users.blogs.others', compact('others'));
     }
 
     public function comment(Request $request)
     {
-        $blogs = DB::table('blogs')
-            ->select('*')
-            ->where('id', '=', $request->id)
-            ->get();
-
-        $comments = DB::table('comments')
-            ->select('*')
-            ->where('blog_id', '=', $request->id)
-            ->get();
-
+        $blogs = $this->user_service->getThisBlog($request->id);
+        $comments = $this->user_service->getComments($request->id);
         return view('users.blogs.comment', compact('blogs', 'comments'));
     }
 
     public function post(Request $request)
     {
         $user_id = Auth::id();
-        // 今のユーザのメアドを取得
-        $user_info = DB::table('users')
-            ->select('*')
-            ->where('id', '=', $user_id)
-            ->get();
-
-        $user_email = $user_info->pluck('email')[0] ;
-        $user_name  = $user_info->pluck('name')[0];
-
-        DB::table('comments')->insert([
-            'blog_id'    => $request->id,
-            'comment'    => $request->comment,
-            'user_email' => $user_email,
-            'user_name'  => $user_name,
-        ]);
-
-        $blogs = DB::table('blogs')
-            ->select('*')
-            ->where('id', '=', $request->id)
-            ->get();
-
-        $comments = DB::table('comments')
-            ->select('*')
-            ->where('blog_id', '=', $request->id)
-            ->get();
+        $user = $this->user_service->postuser($user_id);
+        $user_email = $user->pluck('email')[0] ;
+        $user_name  = $user->pluck('name')[0];
+        $this->user_service->postComment($request->id, $request->comment, $user_email, $user_name);
+        $blogs = $this->user_service->getThisBlog($request->id);
+        $comments = $this->user_service->getComments($request->id);
 
         return view('users.blogs.comment', compact('blogs', 'comments'));
     }
@@ -272,9 +144,7 @@ class UserController extends Controller
     public function unsubscribe()
     {
         $user_id = Auth::id();
-        $data    = User::find($user_id);
-        $data->delete();
-        
-        return redirect('/');
+        $this->user_service->unsubscribe($user_id);
+        return view('users.index');
     }
 }

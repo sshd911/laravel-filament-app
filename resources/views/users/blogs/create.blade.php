@@ -8,7 +8,7 @@
             </tr>
         </thead>
         <tbody>
-            <form method="GET" action="{{ route('users.blogs.upgrade') }}">
+            <form method="GET" action="{{ route('users.blogs.create') }}">
                 @method('GET')
                 <tr> 
                     <input     type="hidden" name='open'  value="true" required>
