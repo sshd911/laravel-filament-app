@@ -34,12 +34,12 @@ class UserService {
     $this->user_repository->deleteBlog($blog_id);
   }
 
-  public function createBlog($count, $email, $name, $blog, $body) {
-    $this->user_repository->createBlog($count, $email, $name, $blog, $body);
+  public function createBlog($user_id, $count, $email, $name, $blog, $body) {
+    $this->user_repository->createBlog($user_id, $count, $email, $name, $blog, $body);
   }
 
-  public function restoreBlog($blog_id) {
-    $this->user_repository->restoreBlog($blog_id);
+  public function restoreBlog($user_id, $blog_id) {
+    $this->user_repository->restoreBlog($user_id, $blog_id);
   }
 
   public function destoryBlog($blog_id) {
@@ -68,8 +68,8 @@ class UserService {
   public function postUser($user_id) {
     return $this->user_repository->postUser($user_id);
   }
-  public function postComment($blog_id, $comment, $email, $name) {
-    $this->user_repository->postComment($blog_id, $comment, $email, $name);
+  public function postComment($user_id, $blog_id, $comment, $email, $name) {
+    $this->user_repository->postComment($user_id, $blog_id, $comment, $email, $name);
   }
 
   public function unsubscribe($user_id) {

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Blog;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -52,7 +51,7 @@ class UserController extends Controller
         $email = $this->user_service->getUserEmail();
         $name = $this->user_service->getUserName();
         $count = DB::table('blogs')->max('id')+1 ?? 1;
-        $this->user_service->createBlog($count, $email, $name, $blog, $body);
+        $this->user_service->createBlog(Auth::id(), $count, $email, $name, $blog, $body);
         return redirect('users/index');
     }
 
@@ -64,7 +63,7 @@ class UserController extends Controller
 
     public function restore($blog_id)
     { 
-        $this->user_service->restoreBlog($blog_id);
+        $this->user_service->restoreBlog(Auth::id(), $blog_id);
         return redirect('users/index');
     }
 

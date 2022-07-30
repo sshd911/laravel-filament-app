@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Models\User;
 use App\Models\Blog;
 use App\Models\Comment;
-use Illuminate\Support\Facades\Auth;
 
 class UserRepository {
 
@@ -45,10 +44,10 @@ class UserRepository {
     Blog::find($blog_id)->delete();
   }
 
-  public function createBlog($count, $email, $name, $blog, $body) {
+  public function createBlog($user_id, $count, $email, $name, $blog, $body) {
     Blog::insert([
       'id' => $count,
-      'user_id' => Auth::id(),
+      'user_id' => $user_id,
       'user_email' => $email,
       'user_name'  => $name, 
       'blog' => $blog,
@@ -57,8 +56,8 @@ class UserRepository {
     ]);
   }
 
-  public function restoreBlog($blog_id) {
-    Blog::where('user_id', '=', Auth::id())
+  public function restoreBlog($user_id, $blog_id) {
+    Blog::where('user_id', '=', $user_id)
       ->where('id', '=', $blog_id)->restore();
   }
 
@@ -92,9 +91,9 @@ class UserRepository {
     return User::where('id', '=', $user_id)->get();
   }
 
-  public function postComment($blog_id, $comment, $email, $name) {
+  public function postComment($user_id, $blog_id, $comment, $email, $name) {
     Comment::insert([
-      'user_id' => Auth::id(),
+      'user_id' => $user_id,
       'blog_id'    => $blog_id,
       'comment'    => $comment,
       'user_email' => $email,
