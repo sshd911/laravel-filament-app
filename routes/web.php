@@ -36,4 +36,5 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/users/blogs/post', [UserController::class, 'post'])->name('users.blogs.post');
 });
 
+
 require __DIR__.'/auth.php';
