@@ -22,19 +22,23 @@ Route::get('/', function() {
 
 Route::get('/users/index', [UserController::class, 'index'])->middleware(['auth', 'web'])->name('users.index');
 
-Route::group(['prefix' => 'users/blogs', 'middleware' => 'web'], function () {
-    Route::get('edit/{blog_id}', [UserController::class, 'edit'])->name('users.blogs.edit');
-    Route::get('delete/{blog_id}', [UserController::class, 'delete'])->name('users.blogs.delete');
-    Route::get('others', [UserController::class, 'others'])->name('users.blogs.others');
-    Route::post('create', [UserController::class, 'create'])->name('users.blogs.create');
-    Route::get('open', [UserController::class, 'open'])->name('users.blogs.open');
-    Route::get('archive', [UserController::class, 'archive'])->name('users.blogs.archive');
-    Route::get('warning', [UserController::class, 'warning'])->name('users.blogs.warning');
-    Route::get('destory', [UserController::class, 'destory'])->name('users.blogs.destory');
-    Route::get('restore/{blog_id}', [UserController::class, 'restore'])->name('users.blogs.restore');
-    Route::get('comment', [UserController::class, 'comment'])->name('users.blogs.comment');
-    Route::get('change/{id}/{open}', [UserController::class, 'change'])->name('users.blogs.change');
-    Route::post('update', [UserController::class, 'update'])->name('users.blogs.update');
-    Route::get('unsubscribe', [UserController::class, 'unsubscribe'])->name('users.blogs.unsubscribe');
-    Route::get('post', [UserController::class, 'post'])->name('users.blogs.post');
+Route::group([
+    'prefix' => 'users/blogs', 
+    'middleware' => 'web', 
+    'controller' => UserController::class
+    ], function () {
+        Route::get('edit/{blog_id}','edit')->name('users.blogs.edit');
+        Route::get('delete/{blog_id}', 'delete')->name('users.blogs.delete');
+        Route::get('others', 'others')->name('users.blogs.others');
+        Route::post('create','create')->name('users.blogs.create');
+        Route::get('open', 'open')->name('users.blogs.open');
+        Route::get('archive', 'archive')->name('users.blogs.archive');
+        Route::get('warning', 'warning')->name('users.blogs.warning');
+        Route::get('destory', 'destory')->name('users.blogs.destory');
+        Route::get('restore/{blog_id}', 'restore')->name('users.blogs.restore');
+        Route::get('comment', 'comment')->name('users.blogs.comment');
+        Route::get('change/{id}/{open}', 'change')->name('users.blogs.change');
+        Route::post('update', 'update')->name('users.blogs.update');
+        Route::get('unsubscribe', 'unsubscribe')->name('users.blogs.unsubscribe');
+        Route::get('post', 'post')->name('users.blogs.post');
 });
