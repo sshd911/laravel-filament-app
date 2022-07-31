@@ -16,10 +16,11 @@ use App\Http\Controllers\UserController;
 
 require __DIR__.'/auth.php';
 
-Route::group(['middleware' => 'web'], function() {
-    Route::get('/', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/index', [UserController::class, 'index'])->name('users.index');
+Route::get('/', function() {
+    return view('welcome');
 });
+
+Route::get('/users/index', [UserController::class, 'index'])->middleware(['auth', 'web'])->name('users.index');
 
 Route::group(['prefix' => 'users/blogs', 'middleware' => 'web'], function () {
     Route::get('edit/{blog_id}', [UserController::class, 'edit'])->name('users.blogs.edit');
